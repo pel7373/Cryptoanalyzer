@@ -1,0 +1,318 @@
+- 
+: 
+? 
+! 
+. 
+, 
+ the 
+ a 
+ an 
+area
+book
+business
+case
+child
+company
+country
+day
+eye
+fact
+family
+government
+group
+hand
+home
+job
+life
+lot
+man
+money
+month
+mother
+night
+number
+part
+people
+place
+point
+problem
+program
+question
+right
+room
+school
+state
+story
+student
+study
+system
+thing
+time
+water
+way
+week
+woman
+word
+work
+world
+year
+able
+bad
+best
+better
+big
+black
+certain
+clear
+different
+early
+easy
+economic
+fine
+free
+full
+good
+great
+hard
+high
+human
+important
+international
+large
+late
+little
+local
+long
+low
+major
+military
+national
+new
+old
+only
+other
+political
+possible
+public
+real
+recent
+right
+small
+social
+special
+strong
+sure
+true
+white
+whole
+young
+accidentally
+actually
+always
+annually
+anxiously
+arrogantly
+awkwardly
+beautifully
+bitterly
+bravely
+briefly
+carefully
+certainly
+daily
+doubtfully
+easily
+especially
+exactly
+fairly
+fast
+generally
+greatly
+happily
+helpfully
+honestly
+immediately
+jealously
+keenly
+lively
+miserably
+mysteriously
+naturally
+officially
+often
+politely
+quickly
+randomly
+rapidly
+regularly
+seldom
+slowly
+suddenly
+thankfully
+totally
+unexpectedly
+unfortunately
+usefully
+voluntarily
+wrongly
+zealously
+ask 
+ be 
+ am 
+ is 
+ are 
+ was 
+ were 
+ become 
+ begin 
+ call 
+ can 
+ come 
+ could 
+ feel 
+ find 
+ get 
+ give 
+ go 
+ have 
+ hear 
+ help 
+ keep 
+ know 
+ leave 
+ let 
+ like 
+ live 
+ look 
+ make 
+ may 
+ mean 
+ might 
+ move 
+ need 
+ play 
+ put 
+ run 
+ say 
+ see 
+ seem 
+ should 
+ show 
+ start 
+ take 
+ talk 
+ tell 
+ think 
+ try 
+ turn 
+ use 
+ want 
+ will 
+ work 
+ would 
+ above 
+ about 
+ across 
+ after 
+ against 
+ along 
+ among 
+ around 
+ at 
+ because of 
+ before 
+ behind 
+ below 
+ beneath 
+ beside 
+ between 
+ by 
+ considering 
+ close to 
+ down 
+ during 
+ except 
+ from 
+ following 
+ for 
+ inside 
+ instead of 
+ into 
+ like 
+ near 
+ of 
+ off 
+ on 
+ on behalf of 
+ out of 
+ outside 
+ over 
+ past 
+ since 
+ through 
+ throughout 
+ to 
+ toward 
+ under 
+ until 
+ up 
+ upon 
+ with 
+ within 
+ without 
+ all 
+ another 
+ anybody 
+ anyone 
+ anything 
+ certain 
+ everybody 
+ everyone 
+ everything 
+ he 
+ her 
+ herself 
+ him 
+ himself 
+ his 
+ it 
+ its 
+ itself 
+ lot 
+ me 
+ mine 
+ my 
+ myself 
+ nobody 
+ nothing 
+ none 
+ our 
+ ourselves 
+ same 
+ she 
+ some 
+ somebody 
+ someone 
+ something 
+ that 
+ their 
+ them 
+ themselves 
+ there 
+ these 
+ they 
+ this 
+ those 
+ us 
+ we 
+ what 
+ whatever 
+ whoever 
+ where 
+ which 
+ who 
+ whose 
+ you 
+ your 
+ yours 
+ yourself 
