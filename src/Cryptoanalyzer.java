@@ -13,10 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
 public class Cryptoanalyzer extends Application {
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz.,\":-!? ";
-
     static String messageFromBruteForce = "";
     @Override
     public void start(Stage primaryStage) {
@@ -48,8 +46,6 @@ public class Cryptoanalyzer extends Application {
         Button buttonSubmit = new Button("Submit");
 
         VBox vBoxRoot = new VBox();
-
-        //we need to add this button to this layout
         vBoxRoot.getChildren().add(labelChoiceRadioButton);
         vBoxRoot.getChildren().addAll(radioButton1Encryption,radioButton2Decryption,radioButton3BruteForce);
         vBoxRoot.getChildren().addAll(
@@ -91,17 +87,12 @@ public class Cryptoanalyzer extends Application {
 
         toggle.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
         {
-            public void changed(ObservableValue<? extends Toggle> ob,
-                                Toggle o, Toggle n)
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n)
             {
-
                 RadioButton rb = (RadioButton)toggle.getSelectedToggle();
-
                 if (rb != null) {
-                    String s = rb.getText();
-
                     // change the label
-                    labelOutputMessage.setText(s + " selected\n");
+                    labelOutputMessage.setText(rb.getText() + " selected\n");
                 }
 
                 labelInputShift.setDisable(false);
@@ -123,7 +114,6 @@ public class Cryptoanalyzer extends Application {
         });
 
         buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
-
             @Override
             public void handle(ActionEvent event) {
 
@@ -152,7 +142,6 @@ public class Cryptoanalyzer extends Application {
                 if(radioButton1Encryption.isSelected())
                     {
                         labelOutputMessage.setText("You have selected: Encrypt\n");
-
                         try {
                             shift =  Integer.parseInt(textInputShift.getText());
                         } catch (NumberFormatException e) {
@@ -161,14 +150,12 @@ public class Cryptoanalyzer extends Application {
                         }
 
                         outputText = encryptText(inputText, shift);
-
                         try {
                             writeToFile(outputFile, outputText);
                         } catch (IOException e) {
                             labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
                             return;
                         }
-
                         labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was successfully written!\n");
                     }
                 else if(radioButton2Decryption.isSelected())
@@ -308,6 +295,4 @@ public class Cryptoanalyzer extends Application {
         bufferedWriter.flush();
         bufferedWriter.close();
     }
-
-
 }
