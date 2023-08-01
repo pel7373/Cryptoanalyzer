@@ -1,4 +1,7 @@
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -14,8 +17,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 public class Cryptoanalyzer extends Application {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz.,\":-!? ";
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZ“”abcdefghijklmnopqrstuvwxyz.,\":-!? ";
     static String messageFromBruteForce = "";
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage primaryStage) {
         Label labelChoiceRadioButton = new Label("Select your operation:");
@@ -136,7 +143,14 @@ public class Cryptoanalyzer extends Application {
                     labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile name can't be empty!\n");
                     return;
                 }
-                String inputText = readTextFromFile(inputFile);
+                String inputText = "";
+                try {
+                    inputText = readTextFromFile(inputFile);
+                } catch (IOException e) {
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
+                    return;
+                }
+
 
                 //processed according to choice of operation
                 if(radioButton1Encryption.isSelected())
@@ -209,9 +223,6 @@ public class Cryptoanalyzer extends Application {
         });
 
     }
-    public static void main(String[] args) {
-        launch();
-    }
 
     private static String bruteForce(String inputEncryptedText, String commonWordsFileName) throws IOException {
         List<String> commonWords = readCommonWords(commonWordsFileName);
@@ -274,25 +285,18 @@ public class Cryptoanalyzer extends Application {
         return output.toString();
     }
 
-    private static String readTextFromFile(String inputFileName) {
+    private static String readTextFromFile(String inputFileName) throws IOException {
         StringBuilder input = new StringBuilder();
-        try (FileReader in = new FileReader(inputFileName);
-             BufferedReader reader = new BufferedReader(in)) {
-            while (reader.ready()) {
-                input.append(reader.readLine());
-                input.append(System.lineSeparator());
-            }
-        } catch (IOException e) {
-            System.out.println("Помилка при читанні файла " + inputFileName);
-            e.printStackTrace();
+        FileInputStream fis = new FileInputStream(new File(inputFileName));
+        while (fis.available() > 0) {
+            input.append((char) fis.read());
         }
         return input.toString().trim();
     }
 
     private static void writeToFile(String outputFileName, String output) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFileName));
-        bufferedWriter.append(output);
-        bufferedWriter.flush();
-        bufferedWriter.close();
+        PrintWriter out = new PrintWriter(new File(outputFileName), String.valueOf(StandardCharsets.UTF_8));
+        out.print(output);
+        out.close();
     }
 }
