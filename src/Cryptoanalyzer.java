@@ -1,7 +1,4 @@
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Application;
@@ -17,8 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 public class Cryptoanalyzer extends Application {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZ“”abcdefghijklmnopqrstuvwxyz.,\":-!? ";
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZ“”abcdefghijklmnopqrstuvxyz.,\":-!? ";
     static String messageFromBruteForce = "";
+
     public static void main(String[] args) {
         launch();
     }
@@ -143,14 +141,13 @@ public class Cryptoanalyzer extends Application {
                     labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile name can't be empty!\n");
                     return;
                 }
-                String inputText = "";
+                String inputText;
                 try {
                     inputText = readTextFromFile(inputFile);
                 } catch (IOException e) {
-                    labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The inpputfile can't be read!\n");
                     return;
                 }
-
 
                 //processed according to choice of operation
                 if(radioButton1Encryption.isSelected())
@@ -287,16 +284,17 @@ public class Cryptoanalyzer extends Application {
 
     private static String readTextFromFile(String inputFileName) throws IOException {
         StringBuilder input = new StringBuilder();
-        FileInputStream fis = new FileInputStream(new File(inputFileName));
-        while (fis.available() > 0) {
-            input.append((char) fis.read());
+        FileInputStream fis = new FileInputStream(inputFileName);
+        int i;
+        while((i = fis.read())!= -1){
+            input.append((char)i);
         }
         return input.toString().trim();
     }
 
     private static void writeToFile(String outputFileName, String output) throws IOException {
-        PrintWriter out = new PrintWriter(new File(outputFileName), String.valueOf(StandardCharsets.UTF_8));
-        out.print(output);
-        out.close();
+        PrintWriter pw = new PrintWriter(outputFileName);
+        pw.write(output);
+        pw.close();
     }
 }
