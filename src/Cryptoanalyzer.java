@@ -1,6 +1,10 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,7 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 public class Cryptoanalyzer extends Application {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVXYZ“”abcdefghijklmnopqrstuvxyz.,\":-!? ";
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,\":-!? ";
     static String messageFromBruteForce = "";
 
     public static void main(String[] args) {
@@ -28,9 +32,11 @@ public class Cryptoanalyzer extends Application {
         RadioButton radioButton1Encryption = new RadioButton("Encryption");
         RadioButton radioButton2Decryption = new RadioButton("Decryption");
         RadioButton radioButton3BruteForce = new RadioButton("BruteForce");
+        RadioButton radioButton4Statistical = new RadioButton("Decryption by statistical analysis");
         radioButton1Encryption.setToggleGroup(toggle);
         radioButton2Decryption.setToggleGroup(toggle);
         radioButton3BruteForce.setToggleGroup(toggle);
+        radioButton4Statistical.setToggleGroup(toggle);
         Label labelInputFileName = new Label("\nInput file name:");
         TextField textInputFileName = new TextField("Write input filename here");
         textInputFileName.setMaxWidth(200);
@@ -46,13 +52,22 @@ public class Cryptoanalyzer extends Application {
         Label labelCommonWordsFileName = new Label("\nFile with common words for brute force:");
         labelCommonWordsFileName.setWrapText(true);
         TextField textCommonWordsFileName = new TextField("common-words.txt");
-        textOutputFileName.setMaxWidth(200);
+        textCommonWordsFileName.setMaxWidth(200);
+
+        Label labelTextExampleFileName = new Label("\nFile with text example for statistical analysis:");
+        labelTextExampleFileName.setWrapText(true);
+        TextField textTextExampleFileName = new TextField("textExample.txt");
+        textTextExampleFileName.setMaxWidth(200);
 
         Button buttonSubmit = new Button("Submit");
 
         VBox vBoxRoot = new VBox();
         vBoxRoot.getChildren().add(labelChoiceRadioButton);
-        vBoxRoot.getChildren().addAll(radioButton1Encryption,radioButton2Decryption,radioButton3BruteForce);
+        vBoxRoot.getChildren().addAll(
+                radioButton1Encryption,
+                radioButton2Decryption,
+                radioButton3BruteForce,
+                radioButton4Statistical);
         vBoxRoot.getChildren().addAll(
                 labelInputFileName,
                 textInputFileName,
@@ -62,6 +77,8 @@ public class Cryptoanalyzer extends Application {
                 textOutputFileName,
                 labelCommonWordsFileName,
                 textCommonWordsFileName,
+                labelTextExampleFileName,
+                textTextExampleFileName,
                 buttonSubmit);
 
         Label labelOutputMessage = new Label();
@@ -79,7 +96,7 @@ public class Cryptoanalyzer extends Application {
         gridPaneRoot.setAlignment(Pos.CENTER);
         Scene sc = new Scene(gridPaneRoot);
 
-        primaryStage.setHeight(650);
+        primaryStage.setHeight(750);
         primaryStage.setWidth(500);
         primaryStage.setTitle("Cryptoanalyzer by Pavlo Liebiediev");
         primaryStage.setScene(sc);
@@ -88,6 +105,8 @@ public class Cryptoanalyzer extends Application {
         radioButton1Encryption.fire();
         labelCommonWordsFileName.setDisable(true);
         textCommonWordsFileName.setDisable(true);
+        labelTextExampleFileName.setDisable(true);
+        textTextExampleFileName.setDisable(true);
         labelOutputMessage.setText(radioButton1Encryption.getText() + " selected\n");
 
         toggle.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
@@ -106,14 +125,27 @@ public class Cryptoanalyzer extends Application {
                 if(radioButton1Encryption.isSelected()) {
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
+                    labelTextExampleFileName.setDisable(true);
+                    textTextExampleFileName.setDisable(true);
                 } else if(radioButton2Decryption.isSelected()) {
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
+                    labelTextExampleFileName.setDisable(true);
+                    textTextExampleFileName.setDisable(true);
                 } else if(radioButton3BruteForce.isSelected()) {
                     labelInputShift.setDisable(true);
                     textInputShift.setDisable(true);
                     labelCommonWordsFileName.setDisable(false);
                     textCommonWordsFileName.setDisable(false);
+                    labelTextExampleFileName.setDisable(true);
+                    textTextExampleFileName.setDisable(true);
+                } else if(radioButton4Statistical.isSelected()) {
+                    labelInputShift.setDisable(true);
+                    textInputShift.setDisable(true);
+                    labelCommonWordsFileName.setDisable(true);
+                    textCommonWordsFileName.setDisable(true);
+                    labelTextExampleFileName.setDisable(false);
+                    textTextExampleFileName.setDisable(false);
                 }
             }
         });
@@ -167,7 +199,7 @@ public class Cryptoanalyzer extends Application {
                             labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
                             return;
                         }
-                        labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was successfully written!\n");
+                        labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was written!\n");
                     }
                 else if(radioButton2Decryption.isSelected())
                 {
@@ -189,7 +221,7 @@ public class Cryptoanalyzer extends Application {
                         labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
                         return;
                     }
-                    labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was successfully written!\n");
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was written!\n");
                 }
 
                 else if(radioButton3BruteForce.isSelected())
@@ -214,11 +246,39 @@ public class Cryptoanalyzer extends Application {
                         return;
                     }
                     labelOutputMessage.setText(labelOutputMessage.getText() + messageFromBruteForce + "\n");
-                    labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was successfully written!\n");
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was written!\n");
+                }
+
+                else if(radioButton4Statistical.isSelected())
+                {
+                    int definedKey;
+
+                    labelInputShift.setDisable(true);
+                    textInputShift.setDisable(true);
+                    labelCommonWordsFileName.setDisable(true);
+                    textCommonWordsFileName.setDisable(true);
+
+                    labelOutputMessage.setText("You have selected: Statistical analysis\n");
+
+                    try {
+                        definedKey = friquencyDefinedKey(inputText, textTextExampleFileName.getText());
+                        outputText = encryptText(inputText, -definedKey);
+                    } catch (IOException e) {
+                        labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The file with text examples can't be read!\n");
+                        return;
+                    }
+
+                    try {
+                        writeToFile(outputFile, outputText);
+                    } catch (IOException e) {
+                        labelOutputMessage.setText(labelOutputMessage.getText() + "Error! The outputfile can't be written!\n");
+                        return;
+                    }
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "The key was calculated: " + definedKey + "\n");
+                    labelOutputMessage.setText(labelOutputMessage.getText() + "The outputfile was written!\n");
                 }
             }
         });
-
     }
 
     private static String bruteForce(String inputEncryptedText, String commonWordsFileName) throws IOException {
@@ -282,6 +342,96 @@ public class Cryptoanalyzer extends Application {
         return output.toString();
     }
 
+    private static int friquencyDefinedKey(String inputText, String fileExample) throws IOException {
+
+        //Завантажуємо додатковий файл із текстом, бажано — того самого автора і тієї самої стилістики.
+        //Програма складає статистику входження символів у закодований текст і додатковий файл із текстом.
+        //Підраховуємо для вісьми найвживаніших літер у вхідному і додатковому тексті
+        // - відстань між цими буквами у алфавіті.
+        // Тобто вираховуємо різницю між першою найвживанішою літерою у вхідному і у додатковому тексті,
+        // між другою..., і так до восьмої. Зрозуміло, що значення різниці для цих пар літер
+        // (від першої і до восьмої) може бути різним. Тому підраховуємо, яка різниця зустрічається частіше
+        // - це і буде наш ключ, з яким ми будемо разкодовувати вхідний текст.
+
+        String inputTextExample = readTextFromFile(fileExample);
+        int[] countCharsInputText = new int[ALPHABET.length()];
+
+        //count the quantity of times each letter is used in input text
+        for (char c :
+                inputText.toCharArray()) {
+            int indexChar = ALPHABET.indexOf(c);
+            if (indexChar != -1) {
+                countCharsInputText[indexChar]++;
+            }
+        }
+
+        //create map of each char (key) and its calculated quantity of uses in input text
+        Map<Character, Integer> inputTextMap = new HashMap<>();
+        for (char c :
+                ALPHABET.toCharArray()) {
+            inputTextMap.put(c, countCharsInputText[ALPHABET.indexOf(c)]);
+        }
+
+        //create sorted list of each char (key) and its calculated quantity of uses in input text
+        List<Map.Entry<Character, Integer>> listInputText = inputTextMap.entrySet().stream()
+                .sorted((e1, e2) -> -e1.getValue().compareTo(e2.getValue()))
+                .collect(Collectors.toList());
+
+        //count the number of uses of each letter in example text
+        int[] countCharsExampleText = new int[ALPHABET.length()];
+        for (char c :
+                inputTextExample.toCharArray()) {
+            int indexChar = ALPHABET.indexOf(c);
+            if (indexChar != -1) {
+                countCharsExampleText[indexChar]++;
+            }
+        }
+
+        //create map of each char (key) and its calculated quantity of uses in example text
+        Map<Character, Integer> exampleTextMap = new HashMap<>();
+        for (char c :
+                ALPHABET.toCharArray()) {
+            exampleTextMap.put(c, countCharsExampleText[ALPHABET.indexOf(c)]);
+        }
+
+        //create sorted list of each char (key) and its calculated quantity of uses in example text
+        List<Map.Entry<Character, Integer>> listExampleText = exampleTextMap.entrySet().stream()
+                .sorted((e1, e2) -> -e1.getValue().compareTo(e2.getValue()))
+                .collect(Collectors.toList());
+
+
+        //Тепер підраховуємо для вісьми найвживаніших літер у вхідному і зразковому тексті - різниця між цими буквами.
+        //Тобто різницю між першою найвживанішою літерою у вхідному і зразковому тексті, між другою..., між восьмою -
+        //і заносимо це в масив newShift
+
+        Integer[] newShift = new Integer[8];
+
+        char c, c2;
+        for (int i = 0; i < 8; i++) {
+            c = listInputText.get(i).getKey();
+            c2 = listExampleText.get(i).getKey();
+            newShift[i] = Math.abs((ALPHABET.length() - ALPHABET.indexOf(c2) + ALPHABET.indexOf(c)) % ALPHABET.length());
+        }
+
+        //Для різних літер ця різниця може бути різною - тому вираховуємо
+
+        Map<Integer, Integer> newShiftCount = new HashMap<>();
+        for (Integer n : newShift)
+        {
+            newShiftCount.put(n, newShiftCount.getOrDefault(n, 0) + 1);
+        }
+
+        int maxKey = 0;
+        int maxValue = 0;
+        for (Map.Entry<Integer,Integer> entry : newShiftCount.entrySet()) {
+            if(entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+                maxKey = entry.getKey();
+            }
+        }
+        return maxKey;
+    }
+
     private static String readTextFromFile(String inputFileName) throws IOException {
         StringBuilder input = new StringBuilder();
         FileInputStream fis = new FileInputStream(inputFileName);
@@ -289,6 +439,7 @@ public class Cryptoanalyzer extends Application {
         while((i = fis.read())!= -1){
             input.append((char)i);
         }
+        fis.close();
         return input.toString().trim();
     }
 
