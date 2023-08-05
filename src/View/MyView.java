@@ -1,3 +1,6 @@
+package View;
+
+import Controller.Controller;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,7 +15,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class MyView extends Application implements View  {
-    public void letsStart(){
+    private static Controller controller;
+    private static String[] params;
+
+    public void letsStart(Controller controller, String[] params){
+        this.controller = controller;
+        this.params = params;
+
         launch();
     }
 
@@ -144,35 +153,35 @@ public class MyView extends Application implements View  {
         buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Cryptoanalyzer.params[0] = textInputFileName.getText();
-                Cryptoanalyzer.params[1] = textInputShift.getText();
-                Cryptoanalyzer.params[2] = textOutputFileName.getText();
-                Cryptoanalyzer.params[3] = textCommonWordsFileName.getText();
-                Cryptoanalyzer.params[4] = textTextExampleFileName.getText();
+                MyView.this.params[0] = textInputFileName.getText();
+                MyView.this.params[1] = textInputShift.getText();
+                MyView.this.params[2] = textOutputFileName.getText();
+                MyView.this.params[3] = textCommonWordsFileName.getText();
+                MyView.this.params[4] = textTextExampleFileName.getText();
 
                 if (radioButton1Encryption.isSelected()) {
-                    Cryptoanalyzer.params[5] = "1";
+                    MyView.this.params[5] = "1";
                 } else if (radioButton2Decryption.isSelected()) {
-                    Cryptoanalyzer.params[5] = "2";
+                    MyView.this.params[5] = "2";
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
                 } else if (radioButton3BruteForce.isSelected()) {
-                    Cryptoanalyzer.params[5] = "3";
+                    MyView.this.params[5] = "3";
                     labelInputShift.setDisable(true);
                     textInputShift.setDisable(true);
                     labelCommonWordsFileName.setDisable(false);
                     textCommonWordsFileName.setDisable(false);
                 } else if (radioButton4Statistical.isSelected()) {
-                    Cryptoanalyzer.params[5] = "4";
+                    MyView.this.params[5] = "4";
                     labelInputShift.setDisable(true);
                     textInputShift.setDisable(true);
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
                 } else {
-                    Cryptoanalyzer.params[5] = null;
+                    MyView.this.params[5] = null;
                 }
 
-                String outputMessage = Cryptoanalyzer.controller.handler(Cryptoanalyzer.params);
+                String outputMessage = MyView.this.controller.handler();
                 labelOutputMessage.setText(outputMessage);
             }
         });

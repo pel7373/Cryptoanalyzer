@@ -7,47 +7,49 @@ import java.io.File;
 import java.io.IOException;
 
 public class MyController implements Controller {
-    StringBuilder outputMessage;
-    String inputText = null;
+    private StringBuilder outputMessage;
+    private String inputText = null;
 
     private DAO dao;
     private Model model;
+    private String[] params;
 
-    public MyController(DAO dao, Model model) {
+    public MyController(DAO dao, Model model, String[] params) {
         this.dao = dao;
         this.model = model;
+        this.params = params;
     }
 
-    public String handler(String[] params) {
+    public String handler() {
         outputMessage = new StringBuilder();
         inputText = null;
         String outputText;
 
-        if(!checkFilesAndReadInput(params)) {
+        if(!checkFilesAndReadInput()) {
             return outputMessage.toString().trim();
         }
 
         //processed according to choice of operation
         if (params[5].equals("1")) { //radioButton1Encryption.isSelected()
-            outputText = performFirstOperationEncryption(params);
+            outputText = performFirstOperationEncryption();
         } else if (params[5].equals("2")) { //radioButton2Decryption.isSelected()
-            outputText = performSecondOperationDecryption(params);
+            outputText = performSecondOperationDecryption();
         } else if (params[5].equals("3")) { //radioButton3BruteForce.isSelected()
-            outputText = performThirdOperationBruteForce(params);
+            outputText = performThirdOperationBruteForce();
         } else if (params[5].equals("4")) { //radioButton4Statistical.isSelected()
-            outputText = performFourthOperationStatistics(params);
+            outputText = performFourthOperationStatistics();
         } else {
             return null;
         }
 
         if(outputText != null) {
             outputMessage.append("The operation was successfully performed!\n");
-            writeToOutput(params, outputText);
+            writeToOutput(outputText);
         }
         return outputMessage.toString().trim();
     }
 
-    private boolean checkFilesAndReadInput(String[] params) {
+    private boolean checkFilesAndReadInput() {
         File file = new File(params[0]);
         if(params[0].trim().equals("")) {
             outputMessage.append("Error! The inputfile name can't be empty!\n");
@@ -73,7 +75,7 @@ public class MyController implements Controller {
 
         return true;
     }
-    private boolean writeToOutput(String[] params, String outputText) {
+    private boolean writeToOutput(String outputText) {
         try {
             dao.writeData(params[2], outputText);
         } catch (IOException e) {
@@ -84,7 +86,7 @@ public class MyController implements Controller {
         return true;
     }
 
-    private String performFirstOperationEncryption(String[] params) {
+    private String performFirstOperationEncryption() {
         int shift;
         String outputText;
         outputMessage = new StringBuilder();
@@ -99,7 +101,7 @@ public class MyController implements Controller {
         return model.encryptText(inputText, shift);
     }
 
-    private String performSecondOperationDecryption(String[] params) {
+    private String performSecondOperationDecryption() {
         int shift;
         outputMessage = new StringBuilder();
 
@@ -112,7 +114,7 @@ public class MyController implements Controller {
         return model.encryptText(inputText, -shift);
     }
 
-    private String performThirdOperationBruteForce(String[] params) {
+    private String performThirdOperationBruteForce() {
         outputMessage = new StringBuilder();
         String outputText;
 
@@ -127,7 +129,7 @@ public class MyController implements Controller {
         return outputText;
     }
 
-    private String performFourthOperationStatistics(String params[]) {
+    private String performFourthOperationStatistics() {
         outputMessage = new StringBuilder();
         int definedKey;
         String outputText;

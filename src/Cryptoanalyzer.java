@@ -2,15 +2,12 @@ import Controller.Controller;
 import Controller.MyController;
 import Model.Model;
 import Model.MyModel;
+import View.View;
+import View.MyView;
 
 
 public class Cryptoanalyzer {
-    public static DAO.DAO dao;
-    public static Controller controller;
-    public static Model model;
-    public static View view;
-
-    //List of params to pass between View <-> Controller.Controller <-> Model.Model
+    //List of String[] params to exchange data between View.View <-> Controller.Controller <-> Model.Model
     // 0 - input file
     // 1 - shift
     // 2 - output file
@@ -19,13 +16,12 @@ public class Cryptoanalyzer {
     // 5 - selected (being performed) operation
     // 6 - internal (from method) message
 
-    public static String[] params = new String[7];
-
     public static void main(String[] args) {
-        dao = new DAO.FileDAO();
-        model = new MyModel(dao, params);
-        controller = new MyController(dao, model);
-        view = new MyView();
-        view.letsStart();
+        String[] params = new String[7];
+        DAO.DAO dao = new DAO.FileDAO();
+        Model model = new MyModel(dao, params);
+        Controller controller = new MyController(dao, model, params);
+        View view = new MyView();
+        view.letsStart(controller, params);
     }
 }
