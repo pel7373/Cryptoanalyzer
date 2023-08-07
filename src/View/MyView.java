@@ -14,14 +14,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
+
 public class MyView extends Application implements View  {
     private static Controller controller;
     private static String[] params;
+    public String[] params2;
 
     public void letsStart(Controller controller, String[] params){
         this.controller = controller;
         this.params = params;
-
+        this.params2 = params;
+        System.out.println("params2 in MyView: " + Arrays.asList(params2));
         launch();
     }
 
@@ -153,6 +157,11 @@ public class MyView extends Application implements View  {
         buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if(params2 != null)
+                    System.out.println("params2 in buttonSubmit.setOnAction" + Arrays.asList(params2));
+                else
+                    System.out.println("params2 in buttonSubmit.setOnAction  is null!!!");
+
                 MyView.this.params[0] = textInputFileName.getText();
                 MyView.this.params[1] = textInputShift.getText();
                 MyView.this.params[2] = textOutputFileName.getText();

@@ -5,6 +5,8 @@ import Model.Model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class MyController implements Controller {
     private StringBuilder outputMessage;
@@ -30,46 +32,48 @@ public class MyController implements Controller {
         }
 
         //processed according to choice of operation
-        if (params[5].equals("1")) { //radioButton1Encryption.isSelected()
-            outputText = performFirstOperationEncryption();
-        } else if (params[5].equals("2")) { //radioButton2Decryption.isSelected()
-            outputText = performSecondOperationDecryption();
-        } else if (params[5].equals("3")) { //radioButton3BruteForce.isSelected()
-            outputText = performThirdOperationBruteForce();
-        } else if (params[5].equals("4")) { //radioButton4Statistical.isSelected()
-            outputText = performFourthOperationStatistics();
-        } else {
-            return null;
-        }
-
-        if(outputText != null) {
+        try {
+            if (params[5].equals("1")) { //radioButton1Encryption.isSelected()
+                outputText = performFirstOperationEncryption();
+            } else if (params[5].equals("2")) { //radioButton2Decryption.isSelected()
+                outputText = performSecondOperationDecryption();
+            } else if (params[5].equals("3")) { //radioButton3BruteForce.isSelected()
+                outputText = performThirdOperationBruteForce();
+            } else if (params[5].equals("4")) { //radioButton4Statistical.isSelected()
+                outputText = performFourthOperationStatistics();
+            } else {
+                return outputMessage.toString().trim();
+            }
             outputMessage.append("The operation was successfully performed!\n");
             writeToOutput(outputText);
+        } catch (NumberFormatException e) {
+            outputMessage.append("Error! Please, enter the correct shift value!\n");
         }
+
         return outputMessage.toString().trim();
     }
 
     private boolean checkFilesAndReadInput() {
         File file = new File(params[0]);
         if(params[0].trim().equals("")) {
-            outputMessage.append("Error! The inputfile name can't be empty!\n");
+            outputMessage.append("Error! The input file name can't be empty!\n");
             return false;
         }
 
         if(!file.exists()) {
-            outputMessage.append("Error! The inputfile doesn't exist!\n");
+            outputMessage.append("Error! The input file doesn't exist!\n");
             return false;
         }
 
         if(params[2].trim().equals("")) {
-            outputMessage.append("Error! The outputfile name can't be empty!\n");
+            outputMessage.append("Error! The output file name can't be empty!\n");
             return false;
         }
 
         try {
             inputText = dao.readData(params[0]);
         } catch (IOException e) {
-            outputMessage.append("Error! The inputfile can't be read!\n");
+            outputMessage.append("Error! The input file can't be read!\n");
             return false;
         }
 
@@ -78,40 +82,20 @@ public class MyController implements Controller {
     private boolean writeToOutput(String outputText) {
         try {
             dao.writeData(params[2], outputText);
+            outputMessage.append("The output file was written!\n");
+            return true;
         } catch (IOException e) {
-            outputMessage.append("Error! The outputfile can't be written!\n");
+            outputMessage.append("Error! The output file can't be written!\n");
             return false;
         }
-        outputMessage.append("The outputfile was written!\n");
-        return true;
     }
 
-    private String performFirstOperationEncryption() {
-        int shift;
-        String outputText;
-        outputMessage = new StringBuilder();
-
-        outputMessage.append("You have selected: Encrypt\n");
-        try {
-            shift = getShift(params);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-
-        return model.encryptText(inputText, shift);
+    private String performFirstOperationEncryption() throws NumberFormatException {
+        return model.encryptText(inputText, getShift());
     }
 
-    private String performSecondOperationDecryption() {
-        int shift;
-        outputMessage = new StringBuilder();
-
-        outputMessage.append("You have selected: Decrypt\n");
-        try {
-            shift = getShift(params);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return model.encryptText(inputText, -shift);
+    private String performSecondOperationDecryption() throws NumberFormatException {
+        return model.decryptText(inputText, getShift());
     }
 
     private String performThirdOperationBruteForce() {
@@ -120,37 +104,40 @@ public class MyController implements Controller {
 
         outputMessage.append("You have selected: BruteForce\n");
         try {
-            outputText = model.bruteForce(inputText, params[3]);
+            List<String> commonWords = readCommonWords(params[3]);
+            outputText = model.bruteForce(inputText, commonWords);
         } catch (IOException e) {
-            outputMessage.append("Error! The file with common words can't be written!\n");
+            outputMessage.append("Error! The file with common words can't be read!\n");
             return null;
         }
-        outputMessage.append(params[6] + "\n");
+        outputMessage.append(params[6]);
+        outputMessage.append(System.lineSeparator());
         return outputText;
     }
 
     private String performFourthOperationStatistics() {
         outputMessage = new StringBuilder();
-        int definedKey;
         String outputText;
 
         outputMessage.append("You have selected: Statistical analysis\n");
         try {
-            outputText = model.DecryptionByStatistics(inputText, params[4]);
+            String inputTextExample = dao.readData(params[4]);
+            outputText = model.DecryptionByStatistics(inputText, inputTextExample);
         } catch (IOException e) {
             outputMessage.append("Error! The file with text examples can't be read!\n");
             return null;
         }
-        outputMessage.append(params[6] + "\n");
+        outputMessage.append(params[6]);
+        outputMessage.append(System.lineSeparator());
         return outputText;
     }
 
-    private int getShift(String[] params) throws NumberFormatException {
-        try {
-            return Integer.parseInt(params[1]);
-        } catch (NumberFormatException e) {
-            outputMessage.append("Error! Please, enter the correct shift value!\n");
-            throw new NumberFormatException();
-        }
+    private int getShift() throws NumberFormatException {
+        return Integer.parseInt(params[1]);
+    }
+
+    private List<String> readCommonWords(String commonWordsFileName) throws IOException {
+        String w = dao.readData(commonWordsFileName);
+        return Arrays.asList(w.split(System.lineSeparator()));
     }
 }

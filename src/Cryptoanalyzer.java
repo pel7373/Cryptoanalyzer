@@ -19,7 +19,7 @@ public class Cryptoanalyzer {
     public static void main(String[] args) {
         String[] params = new String[7];
         DAO.DAO dao = new DAO.FileDAO();
-        Model model = new MyModel(dao, params);
+        Model model = new MyModel(params);
         Controller controller = new MyController(dao, model, params);
         View view = new MyView();
         view.letsStart(controller, params);

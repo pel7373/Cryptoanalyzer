@@ -1,9 +1,5 @@
 package Model;
 
-import DAO.DAO;
-
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +8,9 @@ import java.util.stream.Collectors;
 public class MyModel implements Model {
     private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,\":-!? ";
     private String[] params;
-    private DAO dao;
 
-    public MyModel(DAO dao, String[] params) {
+    public MyModel(String[] params) {
         this.params = params;
-        this.dao = dao;
     }
 
     @Override
@@ -44,9 +38,7 @@ public class MyModel implements Model {
     }
 
     @Override
-    public String bruteForce(String inputEncryptedText, String commonWordsFileName) throws IOException {
-        List<String> commonWords = readCommonWords(commonWordsFileName);
-
+    public String bruteForce(String inputEncryptedText, List<String> commonWords) {
         int counterCoincidenceMax = 0;
         int counterCoincidenceMax2 = 0;
         int counterCoincidenceMaxShift = 0;
@@ -71,8 +63,8 @@ public class MyModel implements Model {
     }
 
     @Override
-    public String DecryptionByStatistics(String inputText, String fileExampleName) throws IOException {
-        int definedKey = friquencyDefinedKey(inputText, fileExampleName);
+    public String DecryptionByStatistics(String inputText, String inputTextExample) {
+        int definedKey = friquencyDefinedKey(inputText, inputTextExample);
         params[6] = "The key was calculated: " + definedKey;
         return encryptText(inputText, -definedKey);
     }
@@ -82,12 +74,7 @@ public class MyModel implements Model {
                 substring.length();
     }
 
-    private List<String> readCommonWords(String commonWordsFileName) throws IOException {
-        String w = dao.readData(commonWordsFileName);
-        return Arrays.asList(w.split(System.lineSeparator()));
-    }
-
-    private int friquencyDefinedKey(String inputText, String fileExampleName) throws IOException {
+    private int friquencyDefinedKey(String inputText, String inputTextExample) {
 
         //Завантажуємо додатковий файл із текстом, бажано — того самого автора і тієї самої стилістики.
         //Програма складає статистику входження символів у закодований текст і додатковий файл із текстом.
@@ -98,7 +85,6 @@ public class MyModel implements Model {
         // (від першої і до восьмої) може бути різним. Тому підраховуємо, яка різниця зустрічається частіше
         // - це і буде наш ключ, з яким ми будемо разкодовувати вхідний текст.
 
-        String inputTextExample = dao.readData(fileExampleName);
         int[] countCharsInputText = new int[ALPHABET.length()];
 
         //count the quantity of times each letter is used in input text
