@@ -17,9 +17,18 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 
 public class MyView extends Application implements View  {
-    private static Controller controller;
     private static String[] params;
-    public String[] params2;
+    private String[] params2;
+
+    private static final int INPUT_FILE                = 0; //params[0] - input file name
+    private static final int SHIFT                     = 1; //params[1] - shift
+    private static final int OUTPUT_FILE               = 2; //params[2] - output file name
+    private static final int COMMON_WORDS_FILE         = 3; //params[3] - file with common words
+    private static final int EXAMPLE_TEXT_FILE         = 4; //params[4] - file with example text
+    private static final int OPERATION_BEING_PERFORMED = 5; //params[5] - selected (being performed) operation
+    private static final int INTERNAL_MESSAGE          = 6; //params[6] - internal (from method) message
+
+    private static Controller controller;
 
     public void letsStart(Controller controller, String[] params){
         this.controller = controller;
@@ -162,32 +171,32 @@ public class MyView extends Application implements View  {
                 else
                     System.out.println("params2 in buttonSubmit.setOnAction  is null!!!");
 
-                MyView.this.params[0] = textInputFileName.getText();
-                MyView.this.params[1] = textInputShift.getText();
-                MyView.this.params[2] = textOutputFileName.getText();
-                MyView.this.params[3] = textCommonWordsFileName.getText();
-                MyView.this.params[4] = textTextExampleFileName.getText();
+                MyView.this.params[INPUT_FILE] = textInputFileName.getText();
+                MyView.this.params[SHIFT] = textInputShift.getText();
+                MyView.this.params[OUTPUT_FILE] = textOutputFileName.getText();
+                MyView.this.params[COMMON_WORDS_FILE] = textCommonWordsFileName.getText();
+                MyView.this.params[EXAMPLE_TEXT_FILE] = textTextExampleFileName.getText();
 
                 if (radioButton1Encryption.isSelected()) {
-                    MyView.this.params[5] = "1";
+                    MyView.this.params[OPERATION_BEING_PERFORMED] = "1";
                 } else if (radioButton2Decryption.isSelected()) {
-                    MyView.this.params[5] = "2";
+                    MyView.this.params[OPERATION_BEING_PERFORMED] = "2";
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
                 } else if (radioButton3BruteForce.isSelected()) {
-                    MyView.this.params[5] = "3";
+                    MyView.this.params[OPERATION_BEING_PERFORMED] = "3";
                     labelInputShift.setDisable(true);
                     textInputShift.setDisable(true);
                     labelCommonWordsFileName.setDisable(false);
                     textCommonWordsFileName.setDisable(false);
                 } else if (radioButton4Statistical.isSelected()) {
-                    MyView.this.params[5] = "4";
+                    MyView.this.params[OPERATION_BEING_PERFORMED] = "4";
                     labelInputShift.setDisable(true);
                     textInputShift.setDisable(true);
                     labelCommonWordsFileName.setDisable(true);
                     textCommonWordsFileName.setDisable(true);
                 } else {
-                    MyView.this.params[5] = null;
+                    MyView.this.params[OPERATION_BEING_PERFORMED] = null;
                 }
 
                 String outputMessage = MyView.this.controller.handler();

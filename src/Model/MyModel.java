@@ -6,8 +6,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MyModel implements Model {
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,\":-!? ";
     private String[] params;
+
+    private static final int INPUT_FILE                = 0; //params[0] - input file name
+    private static final int SHIFT                     = 1; //params[1] - shift
+    private static final int OUTPUT_FILE               = 2; //params[2] - output file name
+    private static final int COMMON_WORDS_FILE         = 3; //params[3] - file with common words
+    private static final int EXAMPLE_TEXT_FILE         = 4; //params[4] - file with example text
+    private static final int OPERATION_BEING_PERFORMED = 5; //params[5] - selected (being performed) operation
+    private static final int INTERNAL_MESSAGE          = 6; //params[6] - internal (from method) message
+
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,\":-!? ";
 
     public MyModel(String[] params) {
         this.params = params;
@@ -57,7 +66,7 @@ public class MyModel implements Model {
             }
         }
         //Send message from this method to controller
-        params[6] = "Зсув: " + counterCoincidenceMaxShift + "; співпадінь зі словником: "
+        params[INTERNAL_MESSAGE] = "Зсув: " + counterCoincidenceMaxShift + "; співпадінь зі словником: "
                 + counterCoincidenceMax + "; на 2-му місці співпадінь " + counterCoincidenceMax2;
         return encryptText(inputEncryptedText, -counterCoincidenceMaxShift);
     }
@@ -65,7 +74,7 @@ public class MyModel implements Model {
     @Override
     public String DecryptionByStatistics(String inputText, String inputTextExample) {
         int definedKey = friquencyDefinedKey(inputText, inputTextExample);
-        params[6] = "The key was calculated: " + definedKey;
+        params[INTERNAL_MESSAGE] = "The key was calculated: " + definedKey;
         return encryptText(inputText, -definedKey);
     }
 
@@ -88,20 +97,14 @@ public class MyModel implements Model {
         int[] countCharsInputText = new int[ALPHABET.length()];
 
         //count the quantity of times each letter is used in input text
-        for (char c :
-                inputText.toCharArray()) {
-            int indexChar = ALPHABET.indexOf(c);
-            if (indexChar != -1) {
-                countCharsInputText[indexChar]++;
-            }
-        }
+        inputText.chars()
+                .filter(c -> ALPHABET.indexOf(c) != -1)
+                .forEach(c -> countCharsInputText[ALPHABET.indexOf(c)]++);
 
         //create map of each char (key) and its calculated quantity of uses in input text
-        Map<Character, Integer> inputTextMap = new HashMap<>();
-        for (char c :
-                ALPHABET.toCharArray()) {
-            inputTextMap.put(c, countCharsInputText[ALPHABET.indexOf(c)]);
-        }
+        Map<Character, Integer> inputTextMap = ALPHABET.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toMap(c -> c, c -> countCharsInputText[ALPHABET.indexOf(c)]));
 
         //create sorted list of each char (key) and its calculated quantity of uses in input text
         List<Map.Entry<Character, Integer>> listInputText = inputTextMap.entrySet().stream()
@@ -110,20 +113,15 @@ public class MyModel implements Model {
 
         //count the number of uses of each letter in example text
         int[] countCharsExampleText = new int[ALPHABET.length()];
-        for (char c :
-                inputTextExample.toCharArray()) {
-            int indexChar = ALPHABET.indexOf(c);
-            if (indexChar != -1) {
-                countCharsExampleText[indexChar]++;
-            }
-        }
+
+        inputTextExample.chars()
+                .filter(c -> ALPHABET.indexOf(c) != -1)
+                .forEach(c -> countCharsExampleText[ALPHABET.indexOf(c)]++);
 
         //create map of each char (key) and its calculated quantity of uses in example text
-        Map<Character, Integer> exampleTextMap = new HashMap<>();
-        for (char c :
-                ALPHABET.toCharArray()) {
-            exampleTextMap.put(c, countCharsExampleText[ALPHABET.indexOf(c)]);
-        }
+        Map<Character, Integer> exampleTextMap = ALPHABET.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toMap(c -> c, c -> countCharsExampleText[ALPHABET.indexOf(c)]));
 
         //create sorted list of each char (key) and its calculated quantity of uses in example text
         List<Map.Entry<Character, Integer>> listExampleText = exampleTextMap.entrySet().stream()
@@ -158,6 +156,8 @@ public class MyModel implements Model {
                 maxKey = entry.getKey();
             }
         }
+
+
         return maxKey;
     }
 }

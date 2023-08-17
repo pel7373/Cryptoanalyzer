@@ -8,13 +8,13 @@ import View.MyView;
 
 public class Cryptoanalyzer {
     //List of String[] params to exchange data between View.View <-> Controller.Controller <-> Model.Model
-    // 0 - input file
-    // 1 - shift
-    // 2 - output file
-    // 3 - file with common words
-    // 4 - file with example text
-    // 5 - selected (being performed) operation
-    // 6 - internal (from method) message
+    //private static final int INPUT_FILE                = 0; //params[0] - input file name
+    //private static final int SHIFT                     = 1; //params[1] - shift
+    //private static final int OUTPUT_FILE               = 2; //params[2] - output file name
+    //private static final int COMMON_WORDS_FILE         = 3; //params[3] - file with common words
+    //private static final int EXAMPLE_TEXT_FILE         = 4; //params[4] - file with example text
+    //private static final int OPERATION_BEING_PERFORMED = 5; //params[5] - selected (being performed) operation
+    //private static final int INTERNAL_MESSAGE          = 6; //params[6] - internal (from method) message
 
     public static void main(String[] args) {
         String[] params = new String[7];
