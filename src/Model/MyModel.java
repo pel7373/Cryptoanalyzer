@@ -94,39 +94,11 @@ public class MyModel implements Model {
         // (від першої і до восьмої) може бути різним. Тому підраховуємо, яка різниця зустрічається частіше
         // - це і буде наш ключ, з яким ми будемо разкодовувати вхідний текст.
 
-        int[] countCharsInputText = new int[ALPHABET.length()];
-
         //count the quantity of times each letter is used in input text
-        inputText.chars()
-                .filter(c -> ALPHABET.indexOf(c) != -1)
-                .forEach(c -> countCharsInputText[ALPHABET.indexOf(c)]++);
-
-        //create map of each char (key) and its calculated quantity of uses in input text
-        Map<Character, Integer> inputTextMap = ALPHABET.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toMap(c -> c, c -> countCharsInputText[ALPHABET.indexOf(c)]));
-
-        //create sorted list of each char (key) and its calculated quantity of uses in input text
-        List<Map.Entry<Character, Integer>> listInputText = inputTextMap.entrySet().stream()
-                .sorted((e1, e2) -> -e1.getValue().compareTo(e2.getValue()))
-                .collect(Collectors.toList());
+        List<Map.Entry<Character, Integer>> listInputText = countCharsInText(inputText);
 
         //count the number of uses of each letter in example text
-        int[] countCharsExampleText = new int[ALPHABET.length()];
-
-        inputTextExample.chars()
-                .filter(c -> ALPHABET.indexOf(c) != -1)
-                .forEach(c -> countCharsExampleText[ALPHABET.indexOf(c)]++);
-
-        //create map of each char (key) and its calculated quantity of uses in example text
-        Map<Character, Integer> exampleTextMap = ALPHABET.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toMap(c -> c, c -> countCharsExampleText[ALPHABET.indexOf(c)]));
-
-        //create sorted list of each char (key) and its calculated quantity of uses in example text
-        List<Map.Entry<Character, Integer>> listExampleText = exampleTextMap.entrySet().stream()
-                .sorted((e1, e2) -> -e1.getValue().compareTo(e2.getValue()))
-                .collect(Collectors.toList());
+        List<Map.Entry<Character, Integer>> listExampleText = countCharsInText(inputTextExample);
 
         //Тепер підраховуємо для вісьми найвживаніших літер у вхідному і зразковому тексті - різниця між цими буквами.
         //Тобто різницю між першою найвживанішою літерою у вхідному і зразковому тексті, між другою..., між восьмою -
@@ -157,7 +129,26 @@ public class MyModel implements Model {
             }
         }
 
-
         return maxKey;
+    }
+
+    private static List<Map.Entry<Character, Integer>> countCharsInText(String inputText) {
+
+        int[] countCharsInputText = new int[ALPHABET.length()];
+
+        inputText.chars()
+                .filter(c -> ALPHABET.indexOf(c) != -1)
+                .forEach(c -> countCharsInputText[ALPHABET.indexOf(c)]++);
+
+        //create map of each char (key) and its calculated quantity of uses in input text
+        Map<Character, Integer> inputTextMap = ALPHABET.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toMap(c -> c, c -> countCharsInputText[ALPHABET.indexOf(c)]));
+
+        //create sorted list of each char (key) and its calculated quantity of uses in input text
+        List<Map.Entry<Character, Integer>> listInputText = inputTextMap.entrySet().stream()
+                .sorted((e1, e2) -> -e1.getValue().compareTo(e2.getValue()))
+                .collect(Collectors.toList());
+        return listInputText;
     }
 }
